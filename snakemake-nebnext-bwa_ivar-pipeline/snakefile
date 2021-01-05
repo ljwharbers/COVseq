@@ -1,0 +1,82 @@
+from os import listdir
+from os.path import isfile, join
+import pandas as pd
+
+# Specify config file
+configfile: "config.yaml"
+
+# Set variables
+in_dir = config['in_dir']
+out_dir = config['out_dir']
+sample = config['sample']
+gatk_bin = config['gatk']
+
+rule all:
+    input:
+        expand("{out_dir}{sample}/consensus_sequences/{sample}.fa",
+               out_dir = out_dir, sample = sample),
+        expand("{out_dir}{sample}/bamfiles/{sample}.trimmed.sorted.dedup.bam",
+               out_dir = out_dir, sample = sample)
+
+
+# Align with BWA
+rule bwa:
+    input:
+        config['ref'],
+        in_dir + sample + "_R1.fastq.gz",
+    output:
+        bam=temp(out_dir + sample + "/bamfiles/{sample}_sorted.bam"),
+        bai=temp(out_dir + sample + "/bamfiles/{sample}_sorted.bam.bai")
+    params:
+        rg=r"@RG\tID:{sample}\tSM:{sample}\tPL:ILLUMINA"
+    threads: config['threads']
+    shell:
+        """
+        bwa mem -M -t {threads} -R '{params.rg}' {input} | \
+        samtools sort -o {output.bam} && samtools index {output.bam}
+        """
+
+# Trim primer quality
+rule trim_primer_quality:
+    input:
+        bam=out_dir + sample + "/bamfiles/{sample}_sorted.bam",
+        bed=config['bed']
+    output:
+        bam_tmp=temp(out_dir + sample + "/bamfiles/{sample}.trimmed.bam"),
+        bam=protected(out_dir + sample + "/bamfiles/{sample}.trimmed.sorted.bam"),
+        bambai=out_dir + sample + "/bamfiles/{sample}.trimmed.sorted.bam.bai"
+    shell:
+        """
+        ivar trim -e -b {input.bed} -p {output.bam_tmp} -i {input.bam} &&
+        samtools sort -o {output.bam} {output.bam_tmp} &&
+        samtools index {output.bam}
+        """
+
+# Deduplicate
+rule deduplication:
+    input:
+        bam=out_dir + sample + "/bamfiles/{sample}.trimmed.sorted.bam",
+        index=out_dir + sample + "/bamfiles/{sample}.trimmed.sorted.bam.bai"
+    output:
+        bam=protected(out_dir + sample + "/bamfiles/{sample}.trimmed.sorted.dedup.bam"),
+        bai=out_dir + sample + "/bamfiles/{sample}.trimmed.sorted.dedup.bam.bai",
+        log=out_dir + sample + "/logs/{sample}-deduplication.log"
+    threads: config['threads'] / 2
+    shell:
+        """
+        {gatk_bin} MarkDuplicatesSpark -I {input.bam} -O {output.bam} \
+        -M {output.log} --conf 'spark.executor.cores={threads}'
+        """
+
+# Call consensus sequence
+rule call_consensus:
+    input:
+        out_dir + sample + "/bamfiles/{sample}.trimmed.sorted.bam"
+    output:
+        fa=protected(out_dir + sample + "/consensus_sequences/{sample}.fa"),
+        qual=protected(out_dir + sample + "/consensus_sequences/{sample}.qual.txt")
+    shell:
+        """
+        samtools mpileup -A -d 0 -Q 0 -F 0 {input} | \
+        ivar consensus -p {output.fa} -n N -m 10
+        """

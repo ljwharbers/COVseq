@@ -1,0 +1,131 @@
+from os import listdir
+from os.path import isfile, join
+import pandas as pd
+
+# Specify config file
+configfile: "config.yaml"
+
+# Set variables
+in_dir = config['in_dir']
+out_dir = config['out_dir']
+sample = config['sample']
+
+# Read barcode file
+bc = pd.read_csv(config['bc'], sep = ",", header = None)
+
+rule all:
+    input:
+        expand(out_dir + sample + "/consensus_sequences/{bc}.fa",
+               bc = bc.iloc[:,0])
+
+# Rule for extracting barcodes from read and appending them to head
+rule demux:
+    input:
+        fastq=in_dir + sample + "_R1.fastq.gz",
+        barcodes=config['bc']
+    output:
+        fastq=expand(out_dir + sample + "/demultiplexed/{bc}.fastq",
+                     bc = bc.iloc[:,0]),
+        unassigned=out_dir + sample + "/demultiplexed/unassigned.fastq",
+    log:
+        out_dir + sample + "/logs/demultiplex.log"
+    params:
+        out=out_dir + sample + "/demultiplexed/",
+        mm=config["mm"]
+    shell:
+        config['demux'] + " -f {input.fastq} -o {params.out} "
+        "-l {log} -b {input.barcodes} -m {params.mm}"
+
+# Align with BWA
+rule bwa:
+    input:
+        config['ref'],
+        out_dir + sample + "/demultiplexed/{bc}.fastq"
+    output:
+        bam=temp(out_dir + sample + "/aligned/{bc}.sorted.bam"),
+        bai=temp(out_dir + sample + "/aligned/{bc}.sorted.bam.bai")
+    params:
+        rg=r"@RG\tID:{bc}\tSM:{bc}\tPL:ILLUMINA"
+    threads: config['threads']
+    shell:
+        "bwa mem -M -t {threads} -R '{params.rg}' {input} | "
+        "samtools sort -o {output.bam} && samtools index {output.bam}"
+
+# Get readnames of reads that mapped within cutsite range
+rule getReads:
+    input:
+        bam=out_dir + sample + "/aligned/{bc}.sorted.bam",
+        cutsites=config['cutsites']
+    output:
+        temp(out_dir + sample + "/aligned/{bc}_readnames.txt")
+    params:
+        config['readlength']
+    shell:
+        config['getReads'] + " -b {input.bam} -c {input.cutsites} -o {output} -r {params}"
+
+# Filter reads based on readname using gatk
+rule filterReads:
+    input:
+        bam=out_dir + sample + "/aligned/{bc}.sorted.bam",
+        bai=out_dir + sample + "/aligned/{bc}.sorted.bam.bai",
+        readnames=out_dir + sample + "/aligned/{bc}_readnames.txt"
+    output:
+        bam=temp(out_dir + sample + "/aligned/{bc}_filtered.bam"),
+        bai=temp(out_dir + sample + "/aligned/{bc}_filtered.bai"),
+        log=out_dir + sample + "/logs/{bc}-cutsite-filter.log"
+    shell:
+        """
+        gatk FilterSamReads -I {input.bam} -O {output.bam} \\
+        -RLF {input.readnames} --FILTER includeReadList --CREATE_INDEX true &&
+
+        echo "pre cutsite-distance filter reads: " \\
+        $(samtools view -c {input.bam}) > {output.log}
+
+        echo "post cutsite-distance filter reads: " \\
+        $(samtools view -c {output.bam}) >> {output.log}
+        """
+
+# Trim primer quality
+rule trim_primer_quality:
+    input:
+        bam=out_dir + sample + "/aligned/{bc}_filtered.bam",
+        bed=config['bed']
+    output:
+        bam_tmp=temp(out_dir + sample + "/trimmed/{bc}.trimmed.bam"),
+        bam=protected(out_dir + sample + "/trimmed/{bc}.trimmed.sorted.bam"),
+        bambai=out_dir + sample + "/trimmed/{bc}.trimmed.sorted.bam.bai"
+    shell:
+        """
+        ivar trim -e -b {input.bed} -p {output.bam_tmp} -i {input.bam} &&
+        samtools sort -o {output.bam} {output.bam_tmp} &&
+        samtools index {output.bam}
+        """
+
+# Deduplicate
+rule deduplication:
+    input:
+        bam=out_dir + sample + "/trimmed/{bc}.trimmed.sorted.bam",
+        index=out_dir + sample + "/trimmed/{bc}.trimmed.sorted.bam.bai"
+    output:
+        bam=protected(out_dir + sample + "/bamfiles/{bc}.trimmed.sorted.dedup.bam"),
+        bai=out_dir + sample + "/bamfiles/{bc}.trimmed.sorted.dedup.bam.bai",
+        log=out_dir + sample + "/logs/{bc}-deduplication.log"
+    threads: 4
+    shell:
+        """
+        umi_tools dedup -I {input.bam} -S {output.bam} -L {output.log} &&
+        samtools index -@ {threads} {output.bam}
+        """
+
+# Call consensus sequence on non deduplicated bamfile
+rule call_consensus:
+    input:
+        out_dir + sample + "/trimmed/{bc}.trimmed.sorted.bam"
+    output:
+        fa=protected(out_dir + sample + "/consensus_sequences/{bc}.fa"),
+        qual=protected(out_dir + sample + "/consensus_sequences/{bc}.qual.txt")
+    shell:
+        """
+        samtools mpileup -A -d 0 -Q 0 -F 0 {input} | \
+        ivar consensus -p {output.fa} -n N -m 10
+        """

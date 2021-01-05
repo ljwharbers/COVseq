@@ -1,0 +1,14 @@
+# Sample related
+in_dir: "/mnt/AchTeraD/data/BICRO240/fastq/"
+out_dir: "/mnt/AchTeraD/data/BICRO240/covseq/"
+sample: "NZ152_S15"
+
+# Semi-static variables
+bed: "/mnt/AchTeraD/Documents/Projects/COVseq/cov2-primers/sars-cov-2_primer-pool.bed"
+
+# Reference
+ref: "/mnt/AchTeraD/Documents/references/sars-cov-2/NC_045512.2.fasta.gz"
+
+# Tools
+gatk: "/home/luukharbers/gatk-4.1.8.0/gatk"
+threads: 32
