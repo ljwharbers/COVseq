@@ -51,7 +51,7 @@ rule trim_primer_quality:
         samtools sort -o {output.bam} {output.bam_tmp} &&
         samtools index {output.bam}
         """
-
+'''
 # Deduplicate
 rule deduplication:
     input:
@@ -67,7 +67,7 @@ rule deduplication:
         {gatk_bin} MarkDuplicatesSpark -I {input.bam} -O {output.bam} \
         -M {output.log} --conf 'spark.executor.cores={threads}'
         """
-
+'''
 # Call consensus sequence
 rule call_consensus:
     input:

@@ -100,7 +100,7 @@ rule trim_primer_quality:
         samtools sort -o {output.bam} {output.bam_tmp} &&
         samtools index {output.bam}
         """
-
+'''
 # Deduplicate
 rule deduplication:
     input:
@@ -116,7 +116,7 @@ rule deduplication:
         umi_tools dedup -I {input.bam} -S {output.bam} -L {output.log} &&
         samtools index -@ {threads} {output.bam}
         """
-
+'''
 # Call consensus sequence on non deduplicated bamfile
 rule call_consensus:
     input:
