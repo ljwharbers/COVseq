@@ -1,16 +1,18 @@
 # Sample related
-in_dir: "/mnt/AchTeraD/data/BICRO251/fastq/"
-out_dir: "/mnt/AchTeraD/data/BICRO251/"
-sample: "TN11"
+in_dir: "/mnt/AchTeraD/data/BICRO268/fastq/"
+out_dir: "/mnt/AchTeraD/data/BICRO264/"
+sample: "NZ225"
+paired: True
+lanesplit: False
 
 # Semi-static variables
-bc: "/mnt/AchTeraD/data/BICRO251/TN11-barcodes.txt"
+bc: "/mnt/AchTeraD/data/BICRO268/NZ222+223+224+225-barcodes.txt"
 cutsites: "/mnt/AchTeraD/Documents/Projects/COVseq/cutsite-distribution/sars-cov-2_NlaIII-MseI-cutsites.bed"
 bed: "/mnt/AchTeraD/Documents/Projects/COVseq/cov2-primers/sars-cov-2_primer-pool.bed"
 readlength: 130
 # Reference
 ref: "/mnt/AchTeraD/Documents/references/sars-cov-2/NC_045512.2.fasta.gz"
-mm: 0
+mm: 1
 # Tools
 demux: "python3 /mnt/AchTeraD/Documents/Projects/scCUTseq/Scripts/preprocessing-pipeline/demultiplex/demultiplex_withcython.py"
 getReads: "/mnt/AchTeraD/Documents/Projects/scCUTseq/Scripts/preprocessing-pipeline/Extract_readnames_nearCutsites.R"
