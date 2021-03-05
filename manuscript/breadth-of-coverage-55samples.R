@@ -13,7 +13,7 @@ ct = fread("/mnt/AchTeraD/Documents/Projects/COVseq/data/55-patients_CT-clean.ts
 annot = fread("/mnt/AchTeraD/data/BICRO251/TN21-annot_barcodes.txt", header = F)
 annot[, V1 := paste0("Sample ", V1)]
 
-files = list.files("/mnt/AchTeraD/data/BICRO258/TN23/trimmed/", pattern = ".bam$", full.names = T)
+files = list.files("/mnt/AchTeraD/data/BICRO254/MS82_S3/trimmed/", pattern = ".bam$", full.names = T)
 
 # params
 param = ScanBamParam(what=c("qname","flag"))

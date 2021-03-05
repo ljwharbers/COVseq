@@ -34,7 +34,7 @@ variants = variants[PASS == TRUE & ALT_FREQ > 0.75 & nchar(ALT) == 1 & TOTAL_DP 
 
 # Remove positive and negative samples (and perhaps samples <= 35ct)
 #variants = variants[!grepl("Sample_Pos|Sample_Neg|Sample_10", sample),]
-variants = variants[!grepl("Sample_Pos|Sample_Neg|Sample_10|Sample_21|Sample_1|Sample_30|Sample_3|Sample_17|Sample_29|Sample_2|Sample_27|Sample_18", sample),]
+variants = variants[!grepl("Sample_Pos|Sample_Neg|Sample_21|Sample_1|Sample_30|Sample_3|Sample_17|Sample_29|Sample_2|Sample_27|Sample_18", sample),]
 
 # Get id and dcast
 variants[, id := factor(paste0(REF, POS, ALT))]
@@ -49,13 +49,13 @@ replicates_total = variants_mat[MS146 == 1 | MS147 == 1 ,]
 plt1 = upset(variants_mat, sets = libraries, nintersect = 10, keep.order = T, order.by = "freq", point.size = 3,
              line.size = 1)
 
-# save_and_plot(plt1, "/mnt/AchTeraD/Documents/Projects/COVseq/Plots/revision/upsetPlots/MS126-MS131-replicates-overlap_ct<=35",
-#               height = 5, width = 8)
+save_and_plot(plt, "/mnt/AchTeraD/Documents/Projects/COVseq/Plots/revision/upsetPlots/MS146-MS147-replicates-overlap_ct<=35",
+              height = 5, width = 8)
 
-# plt2 = upset(variants_mat, sets = libraries[1:7], nintersect = 10, keep.order = T, order.by = "freq", point.size = 3,
+# plt2 = upset(variants_mat[, c(1, 3:4)], sets = libraries, nintersect = 10, keep.order = T, order.by = "freq", point.size = 3,
 #              line.size = 1)
-
-# save_and_plot(plt2, "/mnt/AchTeraD/Documents/Projects/COVseq/Plots/revision/upsetPlots/MS126-MS131-replicates-NEBNext-overlap_ct<=35",
+# 
+# save_and_plot(plt2, "/mnt/AchTeraD/Documents/Projects/COVseq/Plots/revision/upsetPlots/MS147-replicates-overlap_ct<=35",
 #               height = 5, width = 8)
 
 # Make Venn diagrams

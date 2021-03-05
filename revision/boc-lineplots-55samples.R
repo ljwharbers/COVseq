@@ -12,7 +12,7 @@ ct = fread("/mnt/AchTeraD/Documents/Projects/COVseq/data/55-patients_CT-clean-ne
 theoret = fread("/mnt/AchTeraD/Documents/Projects/COVseq/theoretical_coverage.tsv")
 #annot = fread("/mnt/AchTeraD/data/BICRO268/MS147+148-barcodes-annot.txt", header = F)
 
-files = list.files("/mnt/AchTeraD/Documents/Projects/COVseq/data/viralrecon/NZ225/variants/bam/", pattern = ".bam$", full.names = T)
+files = list.files("/mnt/AchTeraD/Documents/Projects/COVseq/data/viralrecon/TN21/variants/bam/", pattern = ".bam$", full.names = T)
 
 samplenames = gsub(".trim.sorted.bam", "", basename(files))
 samplenames = gsub("_", " ", samplenames)
@@ -75,7 +75,7 @@ plt1 = ggplot(total_m[region == "full"], aes(x = sample, y = value, group = dept
   labs(y = "Breadth of Coverage", x = "Sample ID") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-save_and_plot(plt1, "/mnt/AchTeraD/Documents/Projects/COVseq/Plots/revision/lineplots-boc/NZ225_fullregion-55+ctrls",
+save_and_plot(plt1, "/mnt/AchTeraD/Documents/Projects/COVseq/Plots/revision/lineplots-boc/TN21_fullregion-55+ctrls",
               height = 7, width = 8)
 
 plt2 = ggplot(total_m[region == "Sregion"], aes(x = sample, y = value, group = depth, color = depth)) +
@@ -88,5 +88,5 @@ plt2 = ggplot(total_m[region == "Sregion"], aes(x = sample, y = value, group = d
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 
-save_and_plot(plt2, "/mnt/AchTeraD/Documents/Projects/COVseq/Plots/revision/lineplots-boc/NZ225_sregion-55+ctrls",
+save_and_plot(plt2, "/mnt/AchTeraD/Documents/Projects/COVseq/Plots/revision/lineplots-boc/TN21_sregion-55+ctrls",
               height = 7, width = 8)
