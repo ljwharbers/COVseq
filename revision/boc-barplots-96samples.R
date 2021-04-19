@@ -8,11 +8,12 @@ sapply(packages, require, character.only = T)
 source("/mnt/AchTeraD/Documents/R-functions/save_and_plot.R")
 
 num_threads=30
-ct = fread("/mnt/AchTeraD/Documents/Projects/COVseq/data/ct_values-cleaned.tsv", header = T)
+ct = fread("/mnt/AchTeraD/Documents/Projects/COVseq/data/CCI-96-ct.tsv", header = T)
+ct[, sample := gsub("_", " ", sample)]
 theoret = fread("/mnt/AchTeraD/Documents/Projects/COVseq/theoretical_coverage.tsv")
 #annot = fread("/mnt/AchTeraD/data/BICRO268/MS147+148-barcodes-annot.txt", header = F)
 
-files = list.files("/mnt/AchTeraD/Documents/Projects/COVseq/data/viralrecon/MS147_miseq/variants/bam/", pattern = ".bam$", full.names = T)
+files = list.files("/mnt/AchTeraD/Documents/Projects/COVseq/data/viralrecon/MS169/variants/bam/", pattern = ".bam$", full.names = T)
 
 samplenames = gsub(".trim.sorted.bam", "", basename(files))
 samplenames = gsub("_", " ", samplenames)
@@ -56,37 +57,50 @@ total = rbindlist(res)
 total[, sample := samplenames]
 
 # Merge with annotation
-#total = merge(total, annot, by.x = "sample", by.y = "V1")
+total = merge(total, ct, by = "sample")
 
 # Melt and prepare for plotting
-total_m = melt(total[, c(9, 4, 7)], id.vars = "sample")
+#total_m = melt(total[, c(9, 4, 7)], id.vars = "sample")
+total_m = melt(total[, c(1, 5, 8, 11)], id.vars = c("sample", "ct"))
 total_m[, depth := gsub(".*_", "", variable)]
 total_m[, region := gsub("_.*", "", variable)]
 
 # Order by ct
-total_m[, sample := factor(sample, levels = c(ct$sample[order(ct$ct)], "Sample Neg", "Sample Pos"))]
+setorder(total_m, ct, -value)
+total_m = total_m[!grepl("Neg", sample)]
+total_m[, sample := factor(sample, levels = total_m[region == "full"]$sample)]
 
-plt1 = ggplot(total_m[region == "full"], aes(x = sample, y = value, group = depth, color = depth)) +
-  geom_line(size = 1.2) +
-  geom_point(size = 1.5) +
-  scale_color_viridis_d() +
-  scale_y_continuous(labels = scales::percent_format()) +
-  geom_hline(yintercept = c(theoret$`NlaIII + MseI`[2]), color = "red", linetype = "dashed", size = 1) +
+plt1 = ggplot(total_m[region == "full"], aes(x = sample, y = value, group = depth, fill = ct)) +
+  geom_col() +
+  scale_fill_viridis_c(direction = -1) +
+  scale_y_continuous(labels = scales::percent_format(), expand = c(0, 0), limit = c(0, 1)) +
+  #geom_hline(yintercept = c(theoret$`NlaIII + MseI`[2]), color = "red", linetype = "dashed", size = 1) +
   labs(y = "Breadth of Coverage", x = "Sample ID") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-save_and_plot(plt1, "/mnt/AchTeraD/Documents/Projects/COVseq/Plots/revision/lineplots-boc/MS147_fullregion-30+ctrls",
-              height = 7, width = 8)
+save_and_plot(plt1, "/mnt/AchTeraD/Documents/Projects/COVseq/Plots/revision/barplots-boc/MS169-96samples-full",
+              height = 6, width = 18)
 
-plt2 = ggplot(total_m[region == "Sregion"], aes(x = sample, y = value, group = depth, color = depth)) +
-  geom_line(size = 1.2) +
-  geom_point(size = 1.5) +
-  scale_color_viridis_d() +
-  scale_y_continuous(labels = scales::percent_format()) +
-  geom_hline(yintercept = c(theoret$`NlaIII + MseI`[2]), color = "red", linetype = "dashed", size = 1) +
+total_m[, sample := factor(sample, levels = total_m[region == "Sregion"]$sample)]
+plt2 = ggplot(total_m[region == "Sregion"], aes(x = sample, y = value, group = depth, fill = value)) +
+  geom_col() +
+  scale_fill_viridis_c(direction = -1) +
+  scale_y_continuous(labels = scales::percent_format(), expand = c(0, 0), limit = c(0, 1)) +
+  #geom_hline(yintercept = c(theoret$`NlaIII + MseI`[5]), color = "red", linetype = "dashed", size = 1) +
   labs(y = "Breadth of Coverage", x = "Sample ID") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 
-save_and_plot(plt2, "/mnt/AchTeraD/Documents/Projects/COVseq/Plots/revision/lineplots-boc/MS147_sregion-30+ctrls",
+save_and_plot(plt2, "/mnt/AchTeraD/Documents/Projects/COVseq/Plots/revision/barplots-boc/MS169-96samples-Sregion",
+              height = 6, width = 18)
+
+# Dotplot
+total_m[, sample := factor(sample, levels = total_m[region == "full"]$sample)]
+
+plt3 = ggplot(total_m[region == "full"], aes(x = sample, y = value)) +
+  geom_point(size = 3) +
+  labs(y = "Breadth of Coverage (10x) ", x = "") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+save_and_plot(plt3, "/mnt/AchTeraD/Documents/Projects/COVseq/Plots/revision/barplots-boc/MS169-96samples-scatter",
               height = 7, width = 8)

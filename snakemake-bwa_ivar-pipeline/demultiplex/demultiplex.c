@@ -3604,7 +3604,7 @@ static PyObject *__pyx_pf_11demultiplex_8process_fastq_paired(CYTHON_UNUSED PyOb
  * 	match = hammingDistanceLoop(barcode, barcodes.iloc[:,0], mismatches)
  * 	return (match,             # <<<<<<<<<<<<<<
  * 		f"@{entry_r1.name}_{match}_{umi} {entry_r1.comment}\n{entry_r1.sequence[20:]}\n+\n{entry_r1.quality[20:]}\n",
- * 		f"@{entry_r2.name}_{match}_{umi} {entry_r2.comment}\n{entry_r2.sequence[20:]}\n+\n{entry_r2.quality[20:]}\n")
+ * 		f"@{entry_r2.name}_{match}_{umi} {entry_r2.comment}\n{entry_r2.sequence}\n+\n{entry_r2.quality}\n")
  */
   __Pyx_XDECREF(__pyx_r);
 
@@ -3612,7 +3612,7 @@ static PyObject *__pyx_pf_11demultiplex_8process_fastq_paired(CYTHON_UNUSED PyOb
  * 	match = hammingDistanceLoop(barcode, barcodes.iloc[:,0], mismatches)
  * 	return (match,
  * 		f"@{entry_r1.name}_{match}_{umi} {entry_r1.comment}\n{entry_r1.sequence[20:]}\n+\n{entry_r1.quality[20:]}\n",             # <<<<<<<<<<<<<<
- * 		f"@{entry_r2.name}_{match}_{umi} {entry_r2.comment}\n{entry_r2.sequence[20:]}\n+\n{entry_r2.quality[20:]}\n")
+ * 		f"@{entry_r2.name}_{match}_{umi} {entry_r2.comment}\n{entry_r2.sequence}\n+\n{entry_r2.quality}\n")
  * 
  */
   __pyx_t_3 = PyTuple_New(13); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 76, __pyx_L1_error)
@@ -3714,7 +3714,7 @@ static PyObject *__pyx_pf_11demultiplex_8process_fastq_paired(CYTHON_UNUSED PyOb
   /* "demultiplex.pyx":77
  * 	return (match,
  * 		f"@{entry_r1.name}_{match}_{umi} {entry_r1.comment}\n{entry_r1.sequence[20:]}\n+\n{entry_r1.quality[20:]}\n",
- * 		f"@{entry_r2.name}_{match}_{umi} {entry_r2.comment}\n{entry_r2.sequence[20:]}\n+\n{entry_r2.quality[20:]}\n")             # <<<<<<<<<<<<<<
+ * 		f"@{entry_r2.name}_{match}_{umi} {entry_r2.comment}\n{entry_r2.sequence}\n+\n{entry_r2.quality}\n")             # <<<<<<<<<<<<<<
  * 
  * def iterateFastq_paired(in_r1, in_r2, barcodes, mismatches,
  */
@@ -3778,26 +3778,20 @@ static PyObject *__pyx_pf_11demultiplex_8process_fastq_paired(CYTHON_UNUSED PyOb
   PyTuple_SET_ITEM(__pyx_t_3, 8, __pyx_kp_u__6);
   __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_entry_r2, __pyx_n_s_sequence); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 77, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_4 = __Pyx_PyObject_GetSlice(__pyx_t_6, 20, 0, NULL, NULL, &__pyx_slice__7, 1, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 77, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_FormatSimple(__pyx_t_6, __pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 77, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyObject_FormatSimple(__pyx_t_4, __pyx_empty_unicode); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 77, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_8 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) > __pyx_t_8) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) : __pyx_t_8;
-  __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_6);
-  __Pyx_GIVEREF(__pyx_t_6);
-  PyTuple_SET_ITEM(__pyx_t_3, 9, __pyx_t_6);
-  __pyx_t_6 = 0;
+  __pyx_t_8 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) > __pyx_t_8) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) : __pyx_t_8;
+  __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_4);
+  __Pyx_GIVEREF(__pyx_t_4);
+  PyTuple_SET_ITEM(__pyx_t_3, 9, __pyx_t_4);
+  __pyx_t_4 = 0;
   __Pyx_INCREF(__pyx_kp_u__8);
   __pyx_t_7 += 3;
   __Pyx_GIVEREF(__pyx_kp_u__8);
   PyTuple_SET_ITEM(__pyx_t_3, 10, __pyx_kp_u__8);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_entry_r2, __pyx_n_s_quality); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 77, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_4 = __Pyx_PyObject_GetSlice(__pyx_t_6, 20, 0, NULL, NULL, &__pyx_slice__7, 1, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 77, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_entry_r2, __pyx_n_s_quality); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 77, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __pyx_t_6 = __Pyx_PyObject_FormatSimple(__pyx_t_4, __pyx_empty_unicode); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 77, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -3819,7 +3813,7 @@ static PyObject *__pyx_pf_11demultiplex_8process_fastq_paired(CYTHON_UNUSED PyOb
  * 	match = hammingDistanceLoop(barcode, barcodes.iloc[:,0], mismatches)
  * 	return (match,             # <<<<<<<<<<<<<<
  * 		f"@{entry_r1.name}_{match}_{umi} {entry_r1.comment}\n{entry_r1.sequence[20:]}\n+\n{entry_r1.quality[20:]}\n",
- * 		f"@{entry_r2.name}_{match}_{umi} {entry_r2.comment}\n{entry_r2.sequence[20:]}\n+\n{entry_r2.quality[20:]}\n")
+ * 		f"@{entry_r2.name}_{match}_{umi} {entry_r2.comment}\n{entry_r2.sequence}\n+\n{entry_r2.quality}\n")
  */
   __pyx_t_3 = PyTuple_New(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 75, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
@@ -3863,7 +3857,7 @@ static PyObject *__pyx_pf_11demultiplex_8process_fastq_paired(CYTHON_UNUSED PyOb
 }
 
 /* "demultiplex.pyx":79
- * 		f"@{entry_r2.name}_{match}_{umi} {entry_r2.comment}\n{entry_r2.sequence[20:]}\n+\n{entry_r2.quality[20:]}\n")
+ * 		f"@{entry_r2.name}_{match}_{umi} {entry_r2.comment}\n{entry_r2.sequence}\n+\n{entry_r2.quality}\n")
  * 
  * def iterateFastq_paired(in_r1, in_r2, barcodes, mismatches,             # <<<<<<<<<<<<<<
  * 	update, outdir, log, barcode_length, umi_length):
@@ -5214,7 +5208,7 @@ static PyObject *__pyx_pf_11demultiplex_10iterateFastq_paired(CYTHON_UNUSED PyOb
   }
 
   /* "demultiplex.pyx":79
- * 		f"@{entry_r2.name}_{match}_{umi} {entry_r2.comment}\n{entry_r2.sequence[20:]}\n+\n{entry_r2.quality[20:]}\n")
+ * 		f"@{entry_r2.name}_{match}_{umi} {entry_r2.comment}\n{entry_r2.sequence}\n+\n{entry_r2.quality}\n")
  * 
  * def iterateFastq_paired(in_r1, in_r2, barcodes, mismatches,             # <<<<<<<<<<<<<<
  * 	update, outdir, log, barcode_length, umi_length):
@@ -5484,7 +5478,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_codeobj__19 = (PyObject*)__Pyx_PyCode_New(6, 0, 9, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__18, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_demultiplex_pyx, __pyx_n_s_process_fastq_paired, 70, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__19)) __PYX_ERR(0, 70, __pyx_L1_error)
 
   /* "demultiplex.pyx":79
- * 		f"@{entry_r2.name}_{match}_{umi} {entry_r2.comment}\n{entry_r2.sequence[20:]}\n+\n{entry_r2.quality[20:]}\n")
+ * 		f"@{entry_r2.name}_{match}_{umi} {entry_r2.comment}\n{entry_r2.sequence}\n+\n{entry_r2.quality}\n")
  * 
  * def iterateFastq_paired(in_r1, in_r2, barcodes, mismatches,             # <<<<<<<<<<<<<<
  * 	update, outdir, log, barcode_length, umi_length):
@@ -5860,7 +5854,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "demultiplex.pyx":79
- * 		f"@{entry_r2.name}_{match}_{umi} {entry_r2.comment}\n{entry_r2.sequence[20:]}\n+\n{entry_r2.quality[20:]}\n")
+ * 		f"@{entry_r2.name}_{match}_{umi} {entry_r2.comment}\n{entry_r2.sequence}\n+\n{entry_r2.quality}\n")
  * 
  * def iterateFastq_paired(in_r1, in_r2, barcodes, mismatches,             # <<<<<<<<<<<<<<
  * 	update, outdir, log, barcode_length, umi_length):

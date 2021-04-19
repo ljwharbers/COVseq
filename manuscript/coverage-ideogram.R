@@ -7,8 +7,8 @@ packages = c("data.table", "karyoploteR", "GenomicAlignments", "Rsamtools")
 sapply(packages, require, character.only = T)
 source("/mnt/AchTeraD/Documents/R-functions/save_and_plot.R")
 
-bam_1 = "/mnt/AchTeraD/data/BICRO231/MS47_S10/trimmed/ACGACCGC.trimmed.sorted.dedup.bam"
-bam_2 = "/mnt/AchTeraD/data/BICRO236/MS48_S11/bamfiles/TGATGCGC.trimmed.sorted.dedup.bam"
+bam_1 = "/mnt/AchTeraD/Documents/Projects/COVseq/data/viralrecon/supernatants/variants/bam/MS45.trim.sorted.bam"
+bam_2 = "/mnt/AchTeraD/Documents/Projects/COVseq/data/viralrecon/supernatants/variants/bam/MS47.trim.sorted.bam"
 
 param = ScanBamParam(what=c("qname","flag"))
 gr_1 = granges(readGAlignments(bam_1, param=param))

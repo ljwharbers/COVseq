@@ -224,8 +224,7 @@ else:
                 mismatches=config['mm']
             shell:
                 config['demux'] + " -f {input.fastq} -o {params.outdir} "
-                "-l {output.logfile} -b {input.barcodes} -m {params.mismatches} "
-                "--barcode_length {params.barcode_length}"
+                "-l {output.logfile} -b {input.barcodes} -m {params.mismatches}"
 
         # Gzip output of demux
         rule pigz:

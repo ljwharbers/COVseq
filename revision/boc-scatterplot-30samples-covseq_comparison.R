@@ -9,7 +9,7 @@ ct = fread("/mnt/AchTeraD/Documents/Projects/COVseq/data/ct_values-cleaned.tsv",
 theoret = fread("/mnt/AchTeraD/Documents/Projects/COVseq/theoretical_coverage.tsv")
 #annot = fread("/mnt/AchTeraD/data/BICRO268/MS147+148-barcodes-annot.txt", header = F)
 
-libraries = c("MS147", "NEBNext")
+libraries = c("MS147", "MS147_miseq", "NEBNext")
 
 res = lapply(libraries, function(lib) {
   files = list.files(paste0("/mnt/AchTeraD/Documents/Projects/COVseq/data/viralrecon/", lib, "/variants/bam/"), pattern = ".bam$", full.names = T)
@@ -56,21 +56,24 @@ total = rbindlist(res)
 total = total[!grepl("Sample 12|Neg|Pos", sample)]
 
 # Make dt for scatterplot
-dt = data.table("NEBNext" = total[library == "NEBNext"]$full_10x,
-                "COVseq" = total[library == "MS147"]$full_10x,
+dt = data.table("COVseq" = total[library == "MS147"]$full_10x,
+                "COVseq_300" = total[library == "MS147_miseq"]$full_10x,
+                "NEBNext" = total[library == "NEBNext"]$full_10x,
                 sample = total[library == "NEBNext"]$sample)
 
 # Merge with Ct
 dt = merge(dt, ct)
 
-plt = ggplot(dt, aes(x = NEBNext, y = COVseq, color = ct)) + 
-  geom_point(size = 4) +
+plt = ggplot(dt, aes(x = COVseq, y = COVseq_300, color = ct)) + 
+  geom_jitter(size = 4) +
   scale_x_continuous(limits = c(0, 1)) +
   scale_y_continuous(limits = c(0, 1)) +
   scale_color_viridis_c(option = "E", direction = -1) +
+  #scale_color_gradient(low = "red", high = "blue") +
+  #geom_abline(slope = 1, linetype = 2, color = "red") + 
   geom_smooth(formula = y ~ x, method = "lm", se = F, color = "red", linetype = 2, size = 2, fullrange = TRUE) +
   stat_cor() +
-  labs(y = "COVseq - Breadth of Coverage (10x)", x = "NEBNext - Breadth of Coverage (10x)")
+  labs(y = "COVseq (300PE) - Breadth of Coverage (10x)", x = "COVseq (150PE) - Breadth of Coverage (10x)")
 
-save_and_plot(plt, "/mnt/AchTeraD/Documents/Projects/COVseq/Plots/revision/scatter-boc/MS147-NEBNext-BoC(10x)-scatter",
+save_and_plot(plt, "/mnt/AchTeraD/Documents/Projects/COVseq/Plots/revision/scatter-boc/MS147-150-300-full",
               height = 7, width = 7)

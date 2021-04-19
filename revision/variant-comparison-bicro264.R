@@ -33,7 +33,7 @@ variants = variants[PASS == TRUE & ALT_FREQ > 0.75 & nchar(ALT) == 1 & TOTAL_DP 
 
 # Remove positive and negative samples (and perhaps samples <= 35ct)
 #variants = variants[!grepl("Sample_Pos|Sample_Neg|Sample_10", sample),]
-variants = variants[!grepl("Sample_Pos|Sample_Neg|Sample_10|Sample_21|Sample_1|Sample_30|Sample_3|Sample_17|Sample_29|Sample_2|Sample_27|Sample_18", sample),]
+variants = variants[!grepl("Sample_Pos|Sample_Neg|Sample_10|Sample_21|Sample_1$|Sample_30|Sample_3$|Sample_17|Sample_29|Sample_2$|Sample_27|Sample_18", sample),]
 
 # Get id and dcast
 variants[, id := factor(paste0(REF, POS, ALT))]

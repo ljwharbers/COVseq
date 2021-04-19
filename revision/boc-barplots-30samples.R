@@ -66,27 +66,25 @@ total_m[, region := gsub("_.*", "", variable)]
 # Order by ct
 total_m[, sample := factor(sample, levels = c(ct$sample[order(ct$ct)], "Sample Neg", "Sample Pos"))]
 
-plt1 = ggplot(total_m[region == "full"], aes(x = sample, y = value, group = depth, color = depth)) +
-  geom_line(size = 1.2) +
-  geom_point(size = 1.5) +
-  scale_color_viridis_d() +
-  scale_y_continuous(labels = scales::percent_format()) +
-  geom_hline(yintercept = c(theoret$`NlaIII + MseI`[2]), color = "red", linetype = "dashed", size = 1) +
+plt1 = ggplot(total_m[region == "full"], aes(x = sample, y = value, group = depth, fill = value)) +
+  geom_col() +
+  scale_fill_viridis_c(direction = -1) +
+  scale_y_continuous(labels = scales::percent_format(), expand = c(0, 0), limit = c(0, 1)) +
+  geom_hline(yintercept = c(theoret$`NlaIII + MseI`[3]), color = "red", linetype = "dashed", size = 1) +
   labs(y = "Breadth of Coverage", x = "Sample ID") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-save_and_plot(plt1, "/mnt/AchTeraD/Documents/Projects/COVseq/Plots/revision/lineplots-boc/MS147_fullregion-30+ctrls",
+save_and_plot(plt1, "/mnt/AchTeraD/Documents/Projects/COVseq/Plots/revision/barplots-boc/MS147_miseq_fullregion-30+ctrls",
               height = 7, width = 8)
 
-plt2 = ggplot(total_m[region == "Sregion"], aes(x = sample, y = value, group = depth, color = depth)) +
-  geom_line(size = 1.2) +
-  geom_point(size = 1.5) +
-  scale_color_viridis_d() +
-  scale_y_continuous(labels = scales::percent_format()) +
-  geom_hline(yintercept = c(theoret$`NlaIII + MseI`[2]), color = "red", linetype = "dashed", size = 1) +
+plt2 = ggplot(total_m[region == "Sregion"], aes(x = sample, y = value, group = depth, fill = value)) +
+  geom_col() +
+  scale_fill_viridis_c(direction = -1) +
+  scale_y_continuous(labels = scales::percent_format(), expand = c(0, 0), limit = c(0, 1)) +
+  geom_hline(yintercept = c(theoret$`NlaIII + MseI`[6]), color = "red", linetype = "dashed", size = 1) +
   labs(y = "Breadth of Coverage", x = "Sample ID") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 
-save_and_plot(plt2, "/mnt/AchTeraD/Documents/Projects/COVseq/Plots/revision/lineplots-boc/MS147_sregion-30+ctrls",
+save_and_plot(plt2, "/mnt/AchTeraD/Documents/Projects/COVseq/Plots/revision/barplots-boc/MS147_miseq_sregion-30+ctrls",
               height = 7, width = 8)

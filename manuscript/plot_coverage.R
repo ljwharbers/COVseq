@@ -7,7 +7,7 @@ packages = c("data.table", "karyoploteR", "GenomicAlignments", "Rsamtools")
 sapply(packages, require, character.only = T)
 source("/mnt/AchTeraD/Documents/R-functions/save_and_plot.R")
 
-files = list.files("/mnt/AchTeraD/data/BICRO241/covseq/TN7_S2/trimmed/", pattern = "bam$", full.names = T)
+files = "/mnt/AchTeraD/Documents/Projects/COVseq/data/viralrecon/supernatants/variants/bam/MS45.trim.sorted.bam"
 plot_dir = "/mnt/AchTeraD/Documents/Projects/COVseq/Plots/coverage/TN7/"
 
 
