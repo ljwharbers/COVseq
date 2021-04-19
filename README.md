@@ -19,7 +19,7 @@ Simply add another entry in the database with the SARS-CoV-2 reference genome an
 Due to sensitive patient information we do not share any patient specific fastq files.
 
 ## Running nf-co.re/viralrecon
-For further processing of fastq files we used the nextflow based pipeline from nf-core called viralrecon (version 1.1.0) https://nf-co.re/viralrecon/1.1.0. For any extra information or troubleshooting help please check out their website and/or join the slack channel for the specific pipeline. 
+For further processing of fastq files we used the nextflow based pipeline from nf-core called viralrecon (version 1.1.0) https://nf-co.re/viralrecon/1.1.0. For any extra information or troubleshooting please check out their website and/or join the slack channel for the specific pipeline. 
 
 Commands we used to run this pipeline are as follows: `$ nextflow run nf-core/viralrecon --input {samplesheet.csv} --genome 'NC_045512.2' --fasta {sarscov2-fastafile} --save_reference --protocol amplicon --amplicon_bed {ampliconbedfile} --skip_assembly --skip_markduplicates --skip_mosdepth --callers ivar --outdir {outdir} -profile docker --max-cpus 40 -r 1.1.0`
 
