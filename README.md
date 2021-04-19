@@ -25,5 +25,10 @@ Commands we used to run this pipeline are as follows: `$ nextflow run nf-core/vi
 
 This generates all output used for further plotting and visualization in the manuscript.
 
+## Pangolin lineage
+To determine pangolin lineage in all the samples. Per library the consensus sequence was concatenated. These sequences are available in the viralrecon output folder `output/variants/ivar/consensus/`. Pangolin (version 2.3.2) can then be run with default settings.
+
+For more information regarding pangolin please go to: https://github.com/cov-lineages/pangolin and https://cov-lineages.org/
+
 ## Further analysis
 For further analysis of viralrecon output there are 2 basic scripts in the `Analysis` folder. These scripts are used to filter SNVs and combine SNVs from multiple samples/libraries and to retrieve bam-file metrics (Breadth of Coverage, number of reads). The output of this can be used to generate all the plots in the manuscript. These scripts are in `Analysis/plotting` but are not ready to be run due to personal paths. 
