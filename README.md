@@ -1,6 +1,8 @@
 # COVseq
-<<<<<<< HEAD
-Scripts used for the analysis of COVseq
+
+Code used for "COVseq is a cost-effective workflow for mass-scale SARS-CoV-2 genomic surveillance"
+
+Simonetti, Zhang, Harbers et al. (2021)
 
 ## Preprocessing
 Use the snakemake pipeline 'snakemake-bwa_ivar-pipeline' to process COVseq libraries.
@@ -20,10 +22,6 @@ Build the python/cython library using `$ python setup.py build_ext --inplace`, d
 For the demultiplexing of fastq files a custom python script is used. Main input required for this script is the fastq file, a list of barcodes used (no column names, just one barcode per row), the length of the barcode (default 8) and the number of mismatches allowed.
 To filter out reads that map too far from cutsites you also need a bed file with all the cut site locations in the genome and the read length.
 For the ivar pipeline the only extra file that is required is the file with the primer locations used for the amplicon sequencing.
-=======
-Code used for "COVseq is a cost-effective workflow for mass-scale SARS-CoV-2 genomic surveillance"
-
-Simonetti, Zhang, Harbers et al. (2021)
 
 ## Demultiplexing COVseq libraries
 Since COVseq libraries are multiplexed libraries (multiple samples in one library). These libraries need to be demultiplexed. To demultiplex COVseq fastq files you can run the script in the `Demultiplex` folder.
@@ -56,4 +54,3 @@ For more information regarding pangolin please go to: https://github.com/cov-lin
 For further analysis of viralrecon output there are 2 basic scripts in the `Analysis` folder. These scripts are used to filter SNVs and combine SNVs from multiple samples/libraries and to retrieve bam-file metrics (Breadth of Coverage, number of reads). The output of this can be used to generate all the plots in the manuscript. These scripts are in `Analysis/plotting` but are not ready to be run due to personal paths. 
 
 If you have any questions or if you are missing files feel free to email me at: luuk.harbers@scilifelab.se
->>>>>>> ff2c7b0fe32f5c773536b2ad94bdf42781bfa3ca
